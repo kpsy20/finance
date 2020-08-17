@@ -3,3 +3,4 @@
 __pycache__/*
 flask_app/.idea/
 .DS_Store
+flask_app/__pycache__/
