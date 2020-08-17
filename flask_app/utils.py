@@ -152,21 +152,22 @@ def getCodeL():
 # 좋은 종목 리스트 구하기
 def getGoodList(codeL):
     goodL = []
-    for code in codeL:
+    size3, size10 = getSize3Size10()
 
+    for code in codeL:
         soup = getSoupFromCode(code)
         soup_report = getSoupFromReport(code)
         name = getName(soup)
 
         # etf/etn/우선주/기준밖시총 제외
-        if isETF(soup) or isETN(soup) or isFirstBySoup(soup) or marketSumBad(soup):
+        if isETF(soup) or isETN(soup) or isFirstBySoup(soup) or marketSumBad(soup, size3, size10):
             continue
 
         # 0<per<7, 0<pbr<1
         per = perUnder7(soup_report)
         pbr = pbrUnder1(soup_report)
         perAvg = per_avg(soup_report)
-        if (per == -1 or pbr == -1 or perAvg == -1):
+        if per == -1 or pbr == -1 or perAvg == -1:
             continue
 
         # 출력
