@@ -112,6 +112,7 @@ def marketSumBad(soup, size3, size10):
 
 # 시가총액 3분위, 10분위 기준 구하기
 def getSize3Size10():
+    # TODO: 해당 일자에 구해둔 결과가 있으면 해당 결과로 반환하도록 리팩토링
     sizeL = []
     for i in range(1, 33):
         soup = bs(requests.get(size_market_url_0 + str(i)).text, 'html.parser')
