@@ -127,7 +127,7 @@ def getSize3Size10():
     return size3, size10
 
 
-# 전체 code list 구하기
+# 전체 code list 구하기 (하루 한번)
 def getCodeL():
     codeL = []
     for i in range(1, 33):

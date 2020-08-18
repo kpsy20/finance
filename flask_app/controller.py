@@ -1,5 +1,5 @@
 from flask import Flask
-import utils
+import localData
 
 app = Flask(__name__)
 
@@ -10,5 +10,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    goodL = utils.getGoodList(utils.getCodeL())
-    print(goodL)
+    localData.atDayStart()
