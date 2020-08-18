@@ -97,11 +97,11 @@ def per_avg(soup_report):
         return -1
 
 
-def marketSumBad(soup, size3, size10):
+def marketSumInRange(soup, size3, size10):
     marketSum = int(cleanText(soup.select_one("#_market_sum").text))
     if marketSum <= size3 or marketSum >= size10:
-        return False
-    return True
+        return True
+    return False
 
 
 # 시가총액 3분위, 10분위 기준 구하기
@@ -151,11 +151,14 @@ def getGoodList(codeL):
 
     for code in codeL:
         soup = getSoupFromCode(code)
+        # 시가총액에 맞는 애들만 선별
+        if not marketSumInRange(soup, size3, size10):
+            continue
         soup_report = getSoupFromReport(code)
         name = getName(soup)
 
-        # etf/etn/우선주/기준밖시총 제외
-        if isETF(soup) or isETNByName(name) or isFirstByName(name) or marketSumBad(soup, size3, size10):
+        # etf/etn/우선주 제외
+        if isETF(soup) or isETNByName(name) or isFirstByName(name):
             continue
 
         # 0<per<7, 0<pbr<1
