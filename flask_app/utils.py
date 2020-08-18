@@ -40,8 +40,7 @@ def isETF(soup):
     return True
 
 
-def isETN(soup):
-    name = getName(soup)
+def isETNByName(name):
     if "ETN" in name:
         return True
     return False
@@ -53,11 +52,6 @@ def isFirstByName(name):
     if name[-2:] in ["우A", "우B", "우C"]:
         return True
     return False
-
-
-def isFirstBySoup(soup):
-    name = getName(soup)
-    return isFirstByName(name)
 
 
 def isStockByName(name):
@@ -161,7 +155,7 @@ def getGoodList(codeL):
         name = getName(soup)
 
         # etf/etn/우선주/기준밖시총 제외
-        if isETF(soup) or isETN(soup) or isFirstBySoup(soup) or marketSumBad(soup, size3, size10):
+        if isETF(soup) or isETNByName(name) or isFirstByName(name) or marketSumBad(soup, size3, size10):
             continue
 
         # 0<per<7, 0<pbr<1
