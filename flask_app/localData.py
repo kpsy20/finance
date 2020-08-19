@@ -2,26 +2,31 @@ import utils
 import sqlite3
 from datetime import datetime
 import os
+import logging
 
-fileName = "data/"+datetime.today().strftime("%Y%m%d")+".db"
+logging.getLogger().setLevel(logging.INFO)
+codeFileName = datetime.today().strftime("%Y%m%d") + "_code.db"
+sizeFileName = datetime.today().strftime("%Y%m%d") + "_size.db"
 
 
 def atDayStart():
-    if codeFileExist():
+    if fileExist(codeFileName):
+        logging.info("codeFile already Exist")
         codeL = getCodeFile()
     else:
+        logging.info("new codeFile required")
         codeL = utils.getCodeL()
         putCodeFile(codeL)
 
 
-def codeFileExist():
-    if fileName in os.listdir("./"):
+def fileExist(fileName):
+    if fileName in os.listdir("./data/"):
         return True
     return False
 
 
 def getCodeFile():
-    conn = sqlite3.connect(fileName)
+    conn = sqlite3.connect("data/" + codeFileName)
     c = conn.cursor()
     c.execute("SELECT code FROM codeL")
     rows = c.fetchall()
@@ -31,7 +36,7 @@ def getCodeFile():
 
 
 def putCodeFile(codeL):
-    conn = sqlite3.connect(fileName)
+    conn = sqlite3.connect("data/" + codeFileName)
     c = conn.cursor()
     c.execute("CREATE TABLE codeL (code)")
     codeString = " ".join(["('" + x + "')," for x in codeL])[:-1]
