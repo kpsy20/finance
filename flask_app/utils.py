@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as bs
+import localData
 
 report_url = "https://navercomp.wisereport.co.kr/v2/company/c1050001.aspx?cn=&cmp_cd="
 code_url = "https://finance.naver.com/item/main.nhn?code="
@@ -171,3 +172,8 @@ def getGoodL(codeL):
         # 출력
         goodL.append([code, name])
     return goodL
+
+
+def statusGoodL(goodL):
+    result = [x + [localData.getStatus(x[0])] for x in goodL]
+    return result

@@ -107,3 +107,23 @@ def putGoodL(goodFileName, goodL):
     c.execute("INSERT INTO goodL VALUES " + goodString)
     conn.commit()
     conn.close()
+
+
+def getStatus(code):
+    conn = sqlite3.connect("data/status.db")
+    c = conn.cursor()
+    c.execute("SELECT status FROM statusTable WHERE code='" + code + "'")
+    rows = c.fetchall()
+    conn.close()
+    if len(rows) == 0:
+        return "Not Having"
+    return rows[0][0]
+
+
+def putStatus(code, status):
+    conn = sqlite3.connect("data/status.db")
+    c = conn.cursor()
+    # c.execute("CREATE TABLE statusTable (code UNIQUE, status)")
+    c.execute("REPLACE INTO statusTable VALUES ('" + code + "', '" + status + "')")
+    conn.commit()
+    conn.close()
