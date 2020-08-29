@@ -10,4 +10,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    localData.atDayStart()
+    localData.dataUpdate("20200828")

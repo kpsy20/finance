@@ -5,27 +5,42 @@ import os
 import logging
 
 logging.getLogger().setLevel(logging.INFO)
-codeFileName = datetime.today().strftime("%Y%m%d") + "_code.db"
-sizeFileName = datetime.today().strftime("%Y%m%d") + "_size.db"
-goodFileName = datetime.today().strftime("%Y%m%d") + "_good.db"
 
 
-def atDayStart():
+def dataUpdate(date):
+    if date == "":
+        codeFileName = datetime.today().strftime("%Y%m%d") + "_code.db"
+        sizeFileName = datetime.today().strftime("%Y%m%d") + "_size.db"
+        goodFileName = datetime.today().strftime("%Y%m%d") + "_good.db"
+    else:
+        codeFileName = date + "_code.db"
+        sizeFileName = date + "_size.db"
+        goodFileName = date + "_good.db"
+
     if fileExist(codeFileName):
         logging.info("codeFile already Exist")
-        codeL = getCodeL()
+        codeL = getCodeL(codeFileName)
     else:
         logging.info("new codeFile required")
         codeL = utils.getCodeL()
-        putCodeL(codeL)
+        putCodeL(codeFileName, codeL)
 
     if fileExist(sizeFileName):
         logging.info("sizeFile already Exist")
-        size3, size10 = getSize3Size10()
+        size3, size10 = getSize3Size10(sizeFileName)
     else:
         logging.info("new sizeFile required")
         size3, size10 = utils.getSize3Size10()
-        putSize3Size10(size3, size10)
+        putSize3Size10(sizeFileName, size3, size10)
+
+    if fileExist(goodFileName):
+        logging.info("goodFile already Exist")
+        goodL = getGoodL(goodFileName)
+    else:
+        logging.info("new goodFile required")
+        goodL = utils.getGoodL(codeL)
+        logging.info("succeed in getting goodFile")
+        putGoodL(goodFileName, goodL)
 
 
 def fileExist(fileName):
@@ -34,7 +49,7 @@ def fileExist(fileName):
     return False
 
 
-def getCodeL():
+def getCodeL(codeFileName):
     conn = sqlite3.connect("data/" + codeFileName)
     c = conn.cursor()
     c.execute("SELECT code FROM codeL")
@@ -44,7 +59,7 @@ def getCodeL():
     return codeL
 
 
-def putCodeL(codeL):
+def putCodeL(codeFileName, codeL):
     conn = sqlite3.connect("data/" + codeFileName)
     c = conn.cursor()
     c.execute("CREATE TABLE codeL (code)")
@@ -54,7 +69,7 @@ def putCodeL(codeL):
     conn.close()
 
 
-def getSize3Size10():
+def getSize3Size10(sizeFileName):
     conn = sqlite3.connect("data/" + sizeFileName)
     c = conn.cursor()
     c.execute("SELECT size3, size10 FROM sizeL")
@@ -64,11 +79,31 @@ def getSize3Size10():
     return size3, size10
 
 
-def putSize3Size10(size3, size10):
+def putSize3Size10(sizeFileName, size3, size10):
     conn = sqlite3.connect("data/" + sizeFileName)
     c = conn.cursor()
     c.execute("CREATE TABLE sizeL (size3, size10)")
     sizeString = "('" + str(size3) + "', '" + str(size10) + "')"
     c.execute("INSERT INTO sizeL VALUES " + sizeString)
+    conn.commit()
+    conn.close()
+
+
+def getGoodL(goodFileName):
+    conn = sqlite3.connect("data/" + goodFileName)
+    c = conn.cursor()
+    c.execute("SELECT * FROM goodL")
+    rows = c.fetchall()
+    conn.close()
+    goodL = [[x[0], x[1]] for x in rows]
+    return goodL
+
+
+def putGoodL(goodFileName, goodL):
+    conn = sqlite3.connect("data/" + goodFileName)
+    c = conn.cursor()
+    c.execute("CREATE TABLE goodL (code, name)")
+    goodString = " ".join(["('" + x[0] + "', '" + x[1] + "')," for x in goodL])[:-1]
+    c.execute("INSERT INTO goodL VALUES " + goodString)
     conn.commit()
     conn.close()

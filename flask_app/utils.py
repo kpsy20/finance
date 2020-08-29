@@ -145,7 +145,7 @@ def getCodeL():
 
 
 # 좋은 종목 리스트 구하기
-def getGoodList(codeL):
+def getGoodL(codeL):
     goodL = []
     size3, size10 = getSize3Size10()
 
@@ -169,6 +169,5 @@ def getGoodList(codeL):
             continue
 
         # 출력
-        goodL.append(name + " " + str(per) + " " + str(pbr))
-        print(name, per, pbr)
+        goodL.append([code, name])
     return goodL
