@@ -127,3 +127,17 @@ def putStatus(code, status):
     c.execute("REPLACE INTO statusTable VALUES ('" + code + "', '" + status + "')")
     conn.commit()
     conn.close()
+
+
+def changeStatus(code, status):
+    conn = sqlite3.connect("data/status.db")
+    c = conn.cursor()
+    if status == "Having":
+        c.execute("REPLACE INTO statusTable VALUES ('" + code + "', 'Not Having')")
+        newStatus = "Not Having"
+    else:
+        c.execute("REPLACE INTO statusTable VALUES ('" + code + "', 'Having')")
+        newStatus = "Having"
+    conn.commit()
+    conn.close()
+    return newStatus

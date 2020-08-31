@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template, jsonify
 import localData
 import utils
 
@@ -13,13 +13,29 @@ def hello():
 @app.route('/good')
 def good():
     statusGoodL = utils.statusGoodL(localData.getGoodL("20200828_good.db"))
-    print(statusGoodL)
-    return render_template('good.html', goodL=statusGoodL, test="hi")
+    return render_template('good.html', goodL=statusGoodL)
 
 
 @app.route('/candidate')
 def candidate():
     return render_template('candidate.html')
+
+
+@app.route('/change_status')
+def change_status():
+    args = request.args
+    code = args['code']
+    status = args['status']
+    newStatus = localData.changeStatus(code, status)
+    if newStatus == "Having":
+        buttonName = "매도"
+        removeClass = "btn-warning"
+        addClass = "btn-success"
+    else:
+        buttonName = "매수"
+        removeClass = "btn-success"
+        addClass = "btn-warning"
+    return jsonify(newStatus=newStatus, buttonName=buttonName, removeClass=removeClass, addClass=addClass)
 
 
 if __name__ == '__main__':
