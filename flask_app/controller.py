@@ -39,4 +39,5 @@ def change_status():
 
 
 if __name__ == '__main__':
+    localData.dataUpdate("")
     print(localData.getStatus("1"))
