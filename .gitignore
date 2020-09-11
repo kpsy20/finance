@@ -5,3 +5,4 @@ flask_app/.idea/
 .DS_Store
 flask_app/__pycache__/
 flask_app/data/*
+flask_app/.DS_Store
