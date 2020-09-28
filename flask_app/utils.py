@@ -99,10 +99,13 @@ def per_avg(soup_report):
 
 
 def marketSumInRange(soup, size3, size10):
-    marketSum = int(cleanText(soup.select_one("#_market_sum").text))
-    if marketSum <= size3 or marketSum >= size10:
-        return True
-    return False
+    try:
+        marketSum = int(cleanText(soup.select_one("#_market_sum").text))
+        if marketSum <= size3 or marketSum >= size10:
+            return True
+        return False
+    except:
+        return False
 
 
 # 시가총액 3분위, 10분위 기준 구하기
