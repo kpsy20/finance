@@ -10,6 +10,8 @@ size_market_url_0 = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0&
 size_market_url_1 = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=1&page="
 
 
+# ham..
+
 # base code
 def getSoupFromCode(code):
     soup = bs(requests.get(code_url + code).text, 'html.parser')
