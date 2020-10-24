@@ -21,6 +21,19 @@ def candidate():
     return render_template('candidate.html')
 
 
+@app.route('/screener')
+def screener():
+    return render_template('screener.html')
+
+
+@app.route('/screener_input')
+def screener_input():
+    args = request.args
+    name = args['name']
+    name = str(int(name) * 10)
+    return name
+
+
 @app.route('/change_status')
 def change_status():
     args = request.args
