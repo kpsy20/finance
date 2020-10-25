@@ -10,8 +10,6 @@ size_market_url_0 = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0&
 size_market_url_1 = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=1&page="
 
 
-# ham..
-
 # base code
 def getSoupFromCode(code):
     soup = bs(requests.get(code_url + code).text, 'html.parser')
@@ -23,7 +21,8 @@ def cleanText(text):
 
 
 def getName(soup):
-    name = soup.select_one("#middle > div.h_company > div.wrap_company > h2 > a").text
+    name = soup.select_one(
+        "#middle > div.h_company > div.wrap_company > h2 > a").text
     return name
 
 
@@ -181,4 +180,28 @@ def getGoodL(codeL):
 
 def statusGoodL(goodL):
     result = [x + [localData.getStatus(x[0])] for x in goodL]
+    return result
+
+
+def crawlingSise():
+    result = []
+    for page in range(1, 2):
+        url = 'https://finance.naver.com/sise/sise_market_sum.nhn?&page='
+        res = requests.get(url+str(page))
+        html = res.text
+
+        soup = bs(html, 'html.parser')
+
+        title = soup.find_all('th')
+        title = [x.text for x in title]
+
+        summary = soup.find_all('tr')
+        for index in range(7, 87):
+            content = summary[index].find_all('td')
+            a = [x.text.replace("\n", "").replace("\t", "") for x in content]
+            if a == ['']:
+                p = 0
+            else:
+                result.append(a)
+                # result에 정보들 저장되어 있음
     return result

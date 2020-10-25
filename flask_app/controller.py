@@ -1,6 +1,9 @@
 from flask import Flask, request, render_template, jsonify
 import localData
 import utils
+import requests
+from bs4 import BeautifulSoup as bs
+
 
 app = Flask(__name__)
 
@@ -32,6 +35,13 @@ def screener_input():
     name = args['name']
     name = str(int(name) * 10)
     return name
+
+
+@app.route('/screener_fund')
+def screener_fund():
+    # 이거 페이지 32페이지 까지 있음
+    dataL = utils.crawlingSise()
+    return jsonify(dataL=dataL)
 
 
 @app.route('/change_status')
