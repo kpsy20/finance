@@ -16,9 +16,9 @@ def good():
     return render_template('good.html', goodL=statusGoodL)
 
 
-@app.route('/candidate')
+@app.route('/good_vue')
 def candidate():
-    return render_template('candidate.html')
+    return render_template('good_vue.html')
 
 
 @app.route('/screener')
@@ -52,4 +52,5 @@ def change_status():
 
 
 if __name__ == '__main__':
-    localData.dataUpdate("")
+    localData.dataUpdate("20200925")
+    app.run()

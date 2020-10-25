@@ -1,82 +1,53 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>finance</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-            crossorigin="anonymous"></script>
-    <script src="http://www.jsviews.com/download/jsrender.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $("button").click(function () {
-                let row = $(this).closest('tr');
-                let code = row.find("td:eq(0)").text();
-                let status = row.find("td:eq(2)").text();
-                $.get("/change_status", {
-                        code: code,
-                        status: status
-                    },
-                    function (data) {
-                        row.find("td:eq(2)").text(data.newStatus);
-                        let nowButton = row.find("td:eq(3)").find("button");
-                        nowButton.removeClass(data.removeClass).addClass(data.addClass);
-                        nowButton.html(data.buttonName);
-                    }
-                )
-            });
-        });
-    </script>
-</head>
-<body>
-<div class="container">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="/good">좋은 종목 리스트</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="candidate">매수 후보 리스트</a>
-            </li>
-        </ul>
-    </nav>
-</div>
+{% extends "layout.html" %}
+{% block content %}
 <div class="container">
     <table class="table" id="goodTable">
         <thead>
-        <tr>
-            <th scope="col">code</th>
-            <th scope="col">name</th>
-            <th scope="col">status</th>
-            <th scope="col">:)</th>
-        </tr>
+            <tr>
+                <th scope="col">code</th>
+                <th scope="col">name</th>
+                <th scope="col">status</th>
+                <th scope="col">:)</th>
+            </tr>
         </thead>
         <tbody>
-        {% for good in goodL %}
-        <tr>
-            <td scope="row">{{good[0]}}</td>
-            <td><a href="https://finance.naver.com/item/main.nhn?code={{good[0]}}">{{good[1]}}</a></td>
-            <td>{{good[2]}}</td>
-            {% if good[2] == "Having" %}
-            <td>
-                <button type="button" class="btn-sm btn-success">매도</button>
-            </td>
-            {% else %}
-            <td>
-                <button type="button" class="btn-sm btn-warning">매수</button>
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
+            {% for good in goodL %}
+            <tr>
+                <td scope="row">{{good[0]}}</td>
+                <td><a href="https://finance.naver.com/item/main.nhn?code={{good[0]}}">{{good[1]}}</a></td>
+                <td>{{good[2]}}</td>
+                {% if good[2] == "Having" %}
+                <td>
+                    <button type="button" class="btn-sm btn-success">매도</button>
+                </td>
+                {% else %}
+                <td>
+                    <button type="button" class="btn-sm btn-warning">매수</button>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
-</body>
-</html>
+<script>
+    $(document).ready(function () {
+        $("button").click(function () {
+            let row = $(this).closest('tr');
+            let code = row.find("td:eq(0)").text();
+            let status = row.find("td:eq(2)").text();
+            $.get("/change_status", {
+                code: code,
+                status: status
+            },
+                function (data) {
+                    row.find("td:eq(2)").text(data.newStatus);
+                    let nowButton = row.find("td:eq(3)").find("button");
+                    nowButton.removeClass(data.removeClass).addClass(data.addClass);
+                    nowButton.html(data.buttonName);
+                }
+            )
+        });
+    });
+</script>
+{% endblock %}

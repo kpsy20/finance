@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="app">
+    [[ title ]]
+</div>
+<div class="container">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="good">좋은 종목 리스트</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="candidate">매수 후보 리스트</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script>
+    var app = new Vue({
+        el: "#app",
+        delimiters: ['[[', ']]'],
+        data: {
+            title: "hello world"
+        }
+    })
+</script>
+{% endblock %}
