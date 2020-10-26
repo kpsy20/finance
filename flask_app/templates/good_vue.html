@@ -1,28 +1,71 @@
 {% extends "layout.html" %}
 {% block content %}
-<div id="app">
-    [[ title ]]
+<div class="container">
+    <div id="app">[[ title ]]</div>
 </div>
 <div class="container">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="good">좋은 종목 리스트</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="candidate">매수 후보 리스트</a>
-            </li>
-        </ul>
-    </nav>
+    <table class="table" id="goodTable">
+        <thead>
+            <tr>
+                <th scope="col">code</th>
+                <th scope="col">name</th>
+                <th scope="col">status</th>
+                <th scope="col">:)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="good in goodL">
+                <td scope="row">[[ good[0] ]]</td>
+                <td>
+                    <a href="https://finance.naver.com/item/main.nhn?code=[[good[0]]]">[[ good[1] ]] </a>
+                </td>
+                <td>[[ good[2] ]]</td>
+                <td>
+                    <button type="button" class="btn-sm btn-success">매도</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <ul id="app2">
+        <li>dd</li>
+        <li v-for="good in goodL">
+            <!-- [[ good ]] -->
+        </li>
+    </ul>
 </div>
 
 <script>
+    Vue.config.devtools = true
     var app = new Vue({
         el: "#app",
-        delimiters: ['[[', ']]'],
+        delimiters: ["[[", "]]"],
         data: {
-            title: "hello world"
-        }
-    })
+            title: "hihi",
+            goodL: {},
+        },
+    });
+
+    var goodTable = new Vue({
+        el: "#goodTable",
+        delimiters: ["[[", "]]"],
+        data: {
+            title: "hihi",
+            goodL: {},
+        },
+        mounted: function () {
+            this.fetchData();
+        },
+        methods: {
+            fetchData: function () {
+                this.$http.get("/getGoodL").then(response => {
+                    console.log(response.body);
+                    this.goodL = response.body.goodL;
+                }, response => {
+                    // error callback
+                    console.log("an error occurred while getting /getGoodL");
+                });
+            },
+        },
+    });
 </script>
 {% endblock %}
