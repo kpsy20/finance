@@ -205,3 +205,36 @@ def crawlingSise():
                 result.append(a)
                 # result에 정보들 저장되어 있음
     return result
+
+
+def crawlingSiseOption(perVal):
+    result = []
+    for page in range(1, 2):
+        url = 'https://finance.naver.com/sise/sise_market_sum.nhn?&page='
+        res = requests.get(url+str(page))
+        html = res.text
+
+        soup = bs(html, 'html.parser')
+
+        title = soup.find_all('th')
+        title = [x.text for x in title]
+        summary = soup.find_all('tr')
+        for index in range(7, 87):
+            content = summary[index].find_all('td')
+            a = [x.text.replace("\n", "").replace("\t", "") for x in content]
+
+            if a == ['']:
+                p = 0
+            else:
+                if(a[10]!="N/A"):
+                    a[10]=a[10].replace(",","")
+                    if(float(a[10])<perVal):
+                        result.append(a)
+                # result에 정보들 저장되어 있음
+    result_string = ''
+    for com in result:
+        result_string =result_string+ "<tr>"
+        for el in com:
+            result_string = result_string + "<td>" + el + "</td>"
+        result_string = result_string + "</td>"
+    return result_string

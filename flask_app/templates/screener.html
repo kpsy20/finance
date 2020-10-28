@@ -1,11 +1,10 @@
 {% extends "layout.html" %} {% block content %}
-<div class="container">
+<div class="container" id='per'>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Filters</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
@@ -27,43 +26,81 @@
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" id="PER" placeholder="PER수치">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="fundTable()">Search</button>
-            </form>
+            <div id="temp">
+                <!-- <h3>[[ title ]]</h3> -->
+                <label>PER필터</label><input type="text" v-model="perValue" />
+                <button v-on:click=fetchData()>[[ title ]]</button>
+                <!-- <p>위 버튼을 클릭한 횟수는 [[ counter ]] 번 입니다.</p> -->
+                <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="fundTable()">주식 만들기</button>
+
+            </div>
+            <!-- <label>v-model:</label><input type="text" v-model="message" id='per2' /> -->
+            <!-- <input class="form-control mr-sm-2" type="text" id="PER" placeholder="PER수치" ref="PER"> -->
         </div>
     </nav>
+    <div class="container" style="font-size: smaller;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">index</th>
+                    <th scope="col">종목명</th>
+                    <th scope="col">현재가</th>
+                    <th scope="col">전일비</th>
+                    <th scope="col">등락률</th>
+                    <th scope="col">액면가</th>
+                    <th scope="col">시가총액</th>
+                    <th scope="col">상장주식수</th>
+                    <th scope="col">외국인비율</th>
+                    <th scope="col">거래량</th>
+                    <th scope="col">PER</th>
+                    <th scope="col">ROE</th>
+                    <th scope="col">토론실</th>
+                </tr>
+            </thead>
+            <tbody id='table_spec'>
+            </tbody>
+        </table>
+    </div>
 </div>
-<p id="demo" align="center">
-    주식정보가 뜹니다
-</p>
-<div class="container">
-    <table class="table" id="goodTable">
-        <thead>
-            <tr>
-                <th scope="col">index</th>
-                <th scope="col">종목명</th>
-                <th scope="col">현재가</th>
-                <th scope="col">전일비</th>
-                <th scope="col">등락률</th>
-                <th scope="col">액면가</th>
-                <th scope="col">시가총액</th>
-                <th scope="col">상장주식수</th>
-                <th scope="col">외국인비율</th>
-                <th scope="col">거래량</th>
-                <th scope="col">PER</th>
-                <th scope="col">ROE</th>
-                <th scope="col">토론실</th>
-            </tr>
-        </thead>
-        <tbody id='table_spec'>
-        </tbody>
-    </table>
-</div>
+<script>
+    Vue.config.devtools = true
+    new Vue({
+        el: '#per',
+        delimiters: ["[[", "]]"],
+        data: {
+            title: "Search",
+            perValue: '',
+            story: '',
+        },
+        methods: {
+            fetchData: function() {
+                this.$http.get("/screener_input", {
+                    params: {
+                        data: this.perValue,
+                    }
+                }).then(response => {
+                    console.log(response.body['dataL']);
+                    // fundTableOption(response.body);
 
+                    this.story = response.body['dataL'];
+
+                    fundTableOption(this.story);
+                }, response => {
+                    // error callback
+                    console.log("an error occurred while getting /screener_input");
+                });
+            },
+        },
+    });
+</script>
+<script type="text/javascript">
+    function fundTableOption(dataL) {
+        document.getElementById("table_spec").innerHTML = dataL;
+    }
+</script>
 <script>
     function printName() {
-        const name = document.getElementById('PER').value;
+        const name = document.getElementById('PER ').value;
         $.get("/screener_input", {
             name: name,
         }, function(name) {
@@ -73,8 +110,8 @@
 </script>
 <script>
     function fundTable() {
-        $.get("/screener_fund", {}, function(data) {
-            var result = '';
+        $.get("/screener_sise", {}, function(data) {
+            var result = ' ';
             data.dataL.forEach(fundObject => {
                 result = result + "<tr>";
                 fundObject.forEach(col => {
@@ -86,6 +123,14 @@
             });
             document.getElementById("table_spec").innerHTML = result;
         })
+    }
+</script>
+<script>
+    function searchTable() {
+        var table = document.getElementById("table_spec").innerHTML.split("<tr>");
+        const per = document.getElementById('PER ').value;
+
+        console.log(table);
     }
 </script>
 {% endblock %}
