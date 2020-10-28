@@ -10,11 +10,11 @@ date = "20200925_good.db"
 app = Flask(__name__)
 
 
-@app.route('/good')
-def good():
-    global date
-    statusGoodL = utils.statusGoodL(localData.getGoodL(date))
-    return render_template('good.html', goodL=statusGoodL)
+# @app.route('/good')
+# def good():
+#     global date
+#     statusGoodL = utils.statusGoodL(localData.getGoodL(date))
+#     return render_template('good.html', goodL=statusGoodL)
 
 
 @app.route('/good_vue')
