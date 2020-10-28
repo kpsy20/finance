@@ -4,6 +4,8 @@ import utils
 import requests
 from bs4 import BeautifulSoup as bs
 
+global date
+date = "20200925_good.db"
 
 app = Flask(__name__)
 
@@ -15,7 +17,8 @@ def hello():
 
 @app.route('/good')
 def good():
-    statusGoodL = utils.statusGoodL(localData.getGoodL("20200828_good.db"))
+    global date
+    statusGoodL = utils.statusGoodL(localData.getGoodL(date))
     return render_template('good.html', goodL=statusGoodL)
 
 
@@ -27,6 +30,12 @@ def candidate():
 @app.route('/screener')
 def screener():
     return render_template('screener.html')
+
+
+@app.route('/getGoodL')
+def getGoodL():
+    global date
+    return jsonify(goodL=utils.statusGoodL(localData.getGoodL(date)))
 
 
 @app.route('/screener_input')
@@ -62,5 +71,5 @@ def change_status():
 
 
 if __name__ == '__main__':
-    localData.dataUpdate("20200925")
+    # localData.dataUpdate("")
     app.run()
