@@ -1,5 +1,4 @@
-{% extends "layout.html" %}
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <div class="container">
     <div id="app">[[ title ]]</div>
 </div>
@@ -52,11 +51,11 @@
             title: "hihi",
             goodL: {},
         },
-        mounted: function () {
+        mounted: function() {
             this.fetchData();
         },
         methods: {
-            fetchData: function () {
+            fetchData: function() {
                 this.$http.get("/getGoodL").then(response => {
                     console.log(response.body);
                     this.goodL = response.body.goodL;

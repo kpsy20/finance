@@ -32,13 +32,13 @@ def screener():
 @app.route('/screener_input')
 def screener_input():
     args = request.args
-    name = args['name']
-    name = str(int(name) * 10)
-    return name
+    data = float(args['data'])
+    dataL = utils.crawlingSiseOption(data)
+    return jsonify(dataL=dataL)
 
 
-@app.route('/screener_fund')
-def screener_fund():
+@app.route('/screener_sise')
+def screener_sise():
     # 이거 페이지 32페이지 까지 있음
     dataL = utils.crawlingSise()
     return jsonify(dataL=dataL)
