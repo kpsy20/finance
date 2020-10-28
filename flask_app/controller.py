@@ -10,11 +10,6 @@ date = "20200925_good.db"
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello():
-    return render_template('index.html')
-
-
 @app.route('/good')
 def good():
     global date
@@ -38,12 +33,12 @@ def getGoodL():
     return jsonify(goodL=utils.statusGoodL(localData.getGoodL(date)))
 
 
-@app.route('/screener_input')
-def screener_input():
-    args = request.args
-    data = float(args['data'])
-    dataL = utils.crawlingSiseOption(data)
-    return jsonify(dataL=dataL)
+# @app.route('/screener_input')
+# def screener_input():
+#     args = request.args
+#     data = float(args['data'])
+#     dataL = utils.crawlingSiseOption(data)
+#     return jsonify(dataL=dataL)
 
 
 @app.route('/screener_sise')
@@ -53,21 +48,21 @@ def screener_sise():
     return jsonify(dataL=dataL)
 
 
-@app.route('/change_status')
-def change_status():
-    args = request.args
-    code = args['code']
-    status = args['status']
-    newStatus = localData.changeStatus(code, status)
-    if newStatus == "Having":
-        buttonName = "매도"
-        removeClass = "btn-warning"
-        addClass = "btn-success"
-    else:
-        buttonName = "매수"
-        removeClass = "btn-success"
-        addClass = "btn-warning"
-    return jsonify(newStatus=newStatus, buttonName=buttonName, removeClass=removeClass, addClass=addClass)
+# @app.route('/change_status')
+# def change_status():
+#     args = request.args
+#     code = args['code']
+#     status = args['status']
+#     newStatus = localData.changeStatus(code, status)
+#     if newStatus == "Having":
+#         buttonName = "매도"
+#         removeClass = "btn-warning"
+#         addClass = "btn-success"
+#     else:
+#         buttonName = "매수"
+#         removeClass = "btn-success"
+#         addClass = "btn-warning"
+#     return jsonify(newStatus=newStatus, buttonName=buttonName, removeClass=removeClass, addClass=addClass)
 
 
 if __name__ == '__main__':
