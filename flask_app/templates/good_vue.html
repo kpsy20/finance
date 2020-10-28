@@ -1,6 +1,7 @@
 {% extends "layout.html" %} {% block content %}
 <div class="container">
     <div id="app">[[ title ]]</div>
+    <button type="button" onclick="loveBum" class="btn-sm">눌러보쟝</button>
 </div>
 <div class="container">
     <table class="table" id="goodTable">
@@ -32,7 +33,11 @@
         </li>
     </ul>
 </div>
-
+<script>
+    function loveBum(){
+        alert("붐아 사랑해애!!!!!");
+    }
+</script>
 <script>
     Vue.config.devtools = true
     var app = new Vue({

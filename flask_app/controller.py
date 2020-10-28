@@ -27,10 +27,10 @@ def screener():
     return render_template('screener.html')
 
 
-@app.route('/getGoodL')
-def getGoodL():
-    global date
-    return jsonify(goodL=utils.statusGoodL(localData.getGoodL(date)))
+# @app.route('/getGoodL')
+# def getGoodL():
+#     global date
+#     return jsonify(goodL=utils.statusGoodL(localData.getGoodL(date)))
 
 
 # @app.route('/screener_input')
@@ -41,11 +41,11 @@ def getGoodL():
 #     return jsonify(dataL=dataL)
 
 
-@app.route('/screener_sise')
-def screener_sise():
-    # 이거 페이지 32페이지 까지 있음
-    dataL = utils.crawlingSise()
-    return jsonify(dataL=dataL)
+# @app.route('/screener_sise')
+# def screener_sise():
+#     # 이거 페이지 32페이지 까지 있음
+#     dataL = utils.crawlingSise()
+#     return jsonify(dataL=dataL)
 
 
 # @app.route('/change_status')
