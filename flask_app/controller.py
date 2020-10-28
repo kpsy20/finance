@@ -17,12 +17,12 @@ app = Flask(__name__)
 #     return render_template('good.html', goodL=statusGoodL)
 
 
-@app.route('/good_vue')
+@app.route('/good_vue/')
 def candidate():
     return render_template('good_vue.html')
 
 
-@app.route('/screener')
+@app.route('/screener/')
 def screener():
     return render_template('screener.html')
 
