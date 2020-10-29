@@ -38,13 +38,31 @@ def getGoodL():
     return jsonify(goodL=utils.statusGoodL(localData.getGoodL(date)))
 
 
-@app.route('/screener_input')
-def screener_input():
-    args = request.args
-    data = float(args['data'])
-    dataL = utils.crawlingSiseOption(data)
-    return jsonify(dataL=dataL)
 
+@app.route('/screener_filter')
+def screener_filter():
+    args = request.args
+    minPer = (args['minPer'])
+    maxPer = (args['maxPer'])
+    minRoe = (args['minRoe'])
+    maxRoe = (args['maxRoe'])
+    minmaxIndex = ["minPer", "maxPer", "minRoe", "maxRoe"]
+    minmaxL = {"minPer":minPer, "maxPer":maxPer, "minRoe":minRoe, "maxRoe":maxRoe}
+    for i in range(0, len(minmaxIndex)):
+        if(minmaxL[minmaxIndex[i]] != ''):
+            try:
+                minmaxL[minmaxIndex[i]] = float(minmaxL[minmaxIndex[i]])
+            except:
+                return "error"
+        else: #공백으로 넘겨준 경우
+            if(i==0 or i==2):
+                minmaxL[minmaxIndex[i]] = float('-inf')
+            if(i==1 or i==3):
+                minmaxL[minmaxIndex[i]] = float('inf')
+
+        
+    dataL = utils.crawlingSiseOption(minmaxL, minmaxIndex)
+    return jsonify(dataL=dataL)
 
 @app.route('/screener_sise')
 def screener_sise():
