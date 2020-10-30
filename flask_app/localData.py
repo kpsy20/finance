@@ -103,7 +103,8 @@ def putGoodL(goodFileName, goodL):
     conn = sqlite3.connect("data/" + goodFileName)
     c = conn.cursor()
     c.execute("CREATE TABLE goodL (code, name)")
-    goodString = " ".join(["('" + x[0] + "', '" + x[1] + "')," for x in goodL])[:-1]
+    goodString = " ".join(
+        ["('" + x[0] + "', '" + x[1] + "')," for x in goodL])[:-1]
     c.execute("INSERT INTO goodL VALUES " + goodString)
     conn.commit()
     conn.close()
@@ -124,7 +125,8 @@ def putStatus(code, status):
     conn = sqlite3.connect("data/status.db")
     c = conn.cursor()
     # c.execute("CREATE TABLE statusTable (code UNIQUE, status)")
-    c.execute("REPLACE INTO statusTable VALUES ('" + code + "', '" + status + "')")
+    c.execute("REPLACE INTO statusTable VALUES ('" +
+              code + "', '" + status + "')")
     conn.commit()
     conn.close()
 
@@ -133,7 +135,8 @@ def changeStatus(code, status):
     conn = sqlite3.connect("data/status.db")
     c = conn.cursor()
     if status == "Having":
-        c.execute("REPLACE INTO statusTable VALUES ('" + code + "', 'Not Having')")
+        c.execute("REPLACE INTO statusTable VALUES ('" +
+                  code + "', 'Not Having')")
         newStatus = "Not Having"
     else:
         c.execute("REPLACE INTO statusTable VALUES ('" + code + "', 'Having')")

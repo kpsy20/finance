@@ -12,7 +12,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return render_template('index.html')
+    return render_template('screener.html')
+
+
+@app.route('/screener')
+def screener():
+    return render_template('screener.html')
 
 
 @app.route('/good')
@@ -27,16 +32,10 @@ def candidate():
     return render_template('good_vue.html')
 
 
-@app.route('/screener')
-def screener():
-    return render_template('screener.html')
-
-
 @app.route('/getGoodL')
 def getGoodL():
     global date
     return jsonify(goodL=utils.statusGoodL(localData.getGoodL(date)))
-
 
 
 @app.route('/screener_filter')
@@ -47,22 +46,23 @@ def screener_filter():
     minRoe = (args['minRoe'])
     maxRoe = (args['maxRoe'])
     minmaxIndex = ["minPer", "maxPer", "minRoe", "maxRoe"]
-    minmaxL = {"minPer":minPer, "maxPer":maxPer, "minRoe":minRoe, "maxRoe":maxRoe}
+    minmaxL = {"minPer": minPer, "maxPer": maxPer,
+               "minRoe": minRoe, "maxRoe": maxRoe}
     for i in range(0, len(minmaxIndex)):
         if(minmaxL[minmaxIndex[i]] != ''):
             try:
                 minmaxL[minmaxIndex[i]] = float(minmaxL[minmaxIndex[i]])
             except:
                 return "error"
-        else: #공백으로 넘겨준 경우
-            if(i==0 or i==2):
+        else:  # 공백으로 넘겨준 경우
+            if(i == 0 or i == 2):
                 minmaxL[minmaxIndex[i]] = float('-inf')
-            if(i==1 or i==3):
+            if(i == 1 or i == 3):
                 minmaxL[minmaxIndex[i]] = float('inf')
 
-        
     dataL = utils.crawlingSiseOption(minmaxL, minmaxIndex)
     return jsonify(dataL=dataL)
+
 
 @app.route('/screener_sise')
 def screener_sise():
