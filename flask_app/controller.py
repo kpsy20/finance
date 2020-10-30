@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def hello():
+def index_screener():
     return render_template('screener.html')
 
 
