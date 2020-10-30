@@ -185,7 +185,7 @@ def statusGoodL(goodL):
 
 def crawlingSise():
     result = []
-    for page in range(1, 2):
+    for page in range(1, 3):
         url = 'https://finance.naver.com/sise/sise_market_sum.nhn?&page='
         res = requests.get(url+str(page))
         html = res.text
@@ -204,12 +204,14 @@ def crawlingSise():
             else:
                 result.append(a)
                 # result에 정보들 저장되어 있음
+    for item in result:
+        del item[12]
     return result
 
 
-def crawlingSiseOption(perVal):
+def crawlingSiseOption(minmaxL, minmaxIndex):
     result = []
-    for page in range(1, 2):
+    for page in range(1, 3):
         url = 'https://finance.naver.com/sise/sise_market_sum.nhn?&page='
         res = requests.get(url+str(page))
         html = res.text
@@ -226,11 +228,14 @@ def crawlingSiseOption(perVal):
             if a == ['']:
                 p = 0
             else:
-                if(a[10]!="N/A"):
-                    a[10]=a[10].replace(",","")
-                    if(float(a[10])<perVal):
-                        result.append(a)
+                filter(a, minmaxL, minmaxIndex, result)
+                # if(a[10]!="N/A"):
+                #     a[10]=a[10].replace(",","")
+                #     if(float(a[10])<minmaxL["maxPer"]):
+                #         result.append(a)
                 # result에 정보들 저장되어 있음
+    for item in result:
+        del item[12]
     result_string = ''
     for com in result:
         result_string =result_string+ "<tr>"
@@ -238,3 +243,25 @@ def crawlingSiseOption(perVal):
             result_string = result_string + "<td>" + el + "</td>"
         result_string = result_string + "</td>"
     return result_string
+
+
+def filter(value, minmaxL, minmaxIndex, result):
+    if(minmaxL['minPer'] == float('-inf') and minmaxL['maxPer'] == float('inf') and minmaxL['minRoe'] == float('-inf') and minmaxL['maxRoe'] == float('inf')):
+        result.append(value)
+    elif(minmaxL['minPer'] == float('-inf') and minmaxL['maxPer'] == float('inf')):
+        if(value[11]!="N/A"):
+            value[11] = value[11].replace(",", "")
+            if(float(value[11])>=minmaxL['minRoe'] and float(value[11])<=minmaxL['maxRoe']):
+                result.append(value)
+    elif(minmaxL['minRoe'] == float('-inf') and minmaxL['maxRoe'] == float('inf')):
+        if(value[10]!="N/A"):
+            value[10] = value[10].replace(",", "")
+            if(float(value[10])>=minmaxL['minPer'] and float(value[10])<=minmaxL['maxPer']):
+                result.append(value)
+    else:
+        if(value[10]!="N/A" and value[11]!="N/A"):
+            value[10] = value[10].replace(",", "")
+            value[11] = value[11].replace(",", "")
+            if(float(value[10])>=minmaxL['minPer'] and float(value[10])<=minmaxL['maxPer'] and float(value[11])>=minmaxL['minRoe'] and float(value[11])<=minmaxL['maxRoe']):
+                result.append(value)
+

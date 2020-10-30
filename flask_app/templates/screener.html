@@ -1,7 +1,8 @@
 {% extends "layout.html" %} {% block content %}
 <div class="container" id='per'>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Filters</a>
+    <br>
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">주식필터</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -27,76 +28,103 @@
                 </li>
             </ul>
             <div id="temp">
-                <!-- <h3>[[ title ]]</h3> -->
-                <label>PER필터</label><input type="text" v-model="perValue" />
-                <button v-on:click=fetchData()>[[ title ]]</button>
-                <!-- <p>위 버튼을 클릭한 횟수는 [[ counter ]] 번 입니다.</p> -->
-                <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="fundTable()">주식 만들기</button>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="fundTable()">[[ makeFund]]</button>
 
             </div>
-            <!-- <label>v-model:</label><input type="text" v-model="message" id='per2' /> -->
-            <!-- <input class="form-control mr-sm-2" type="text" id="PER" placeholder="PER수치" ref="PER"> -->
         </div>
-    </nav>
-    <div class="container" style="font-size: smaller;">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">index</th>
-                    <th scope="col">종목명</th>
-                    <th scope="col">현재가</th>
-                    <th scope="col">전일비</th>
-                    <th scope="col">등락률</th>
-                    <th scope="col">액면가</th>
-                    <th scope="col">시가총액</th>
-                    <th scope="col">상장주식수</th>
-                    <th scope="col">외국인비율</th>
-                    <th scope="col">거래량</th>
-                    <th scope="col">PER</th>
-                    <th scope="col">ROE</th>
-                    <th scope="col">토론실</th>
-                </tr>
-            </thead>
-            <tbody id='table_spec'>
-            </tbody>
-        </table>
+    </nav> -->
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <input class="form-control" type="text" v-model="perValueMin" placeholder="minimum PER" />
+        </div>
+        <div class="form-group col-md-2">
+            <input class="form-control" type="text" v-model="perValueMax" placeholder="maximum PER" />
+        </div>
+        <!-- <div class="form-group col-md-2">
+            <button v-on:click=perFilter() class="btn btn-outline-success my-2 my-sm-0">[[ title ]]</button>
+        </div> -->
+        <div class="form-group col-md-2">
+            <input class="form-control" type="text" v-model="roeValueMin" placeholder="minimum ROE" />
+
+        </div>
+        <div class="form-group col-md-2">
+            <input class="form-control" type="text" v-model="roeValueMax" placeholder="maximum ROE" />
+        </div>
+        <div class="form-group col-md-2">
+            <button v-on:click=filter() class="btn btn-outline-success my-2 my-sm-0">[[ title ]]</button>
+        </div>
+        <div class="form-group col-md-2">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="button" id='temp' onclick="fundTable()">[[makeFund]]</button>
+        </div>
     </div>
 </div>
+<div class="container" style="font-size: smaller">
+    <table class="table table-striped table-dark table-bordered">
+        <caption>from naver finance</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">index</th>
+                <th scope="col">종목명</th>
+                <th scope="col">현재가</th>
+                <th scope="col">전일비</th>
+                <th scope="col">등락률</th>
+                <th scope="col">액면가</th>
+                <th scope="col">시가총액</th>
+                <th scope="col">상장주식수</th>
+                <th scope="col">외국인비율</th>
+                <th scope="col">거래량</th>
+                <th scope="col">PER</th>
+                <th scope="col">ROE</th>
+            </tr>
+        </thead>
+        <tbody id='table_spec'>
+        </tbody>
+    </table>
+</div>
+<div id='loading'>
+
+</div>
+
+
 <script>
     Vue.config.devtools = true
     new Vue({
         el: '#per',
         delimiters: ["[[", "]]"],
         data: {
-            title: "Search",
-            perValue: '',
-            story: '',
+            title: "Go",
+            perValueMin: '',
+            perValueMax: '',
+            roeValueMin: '',
+            roeValueMax: '',
+            makeFund: 'Top100',
         },
         methods: {
-            fetchData: function() {
-                this.$http.get("/screener_input", {
+            filter: function() {
+                document.getElementById("loading").innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+                document.getElementById("table_spec").innerHTML = '';
+                this.$http.get("/screener_filter", {
                     params: {
-                        data: this.perValue,
+                        minPer: this.perValueMin,
+                        maxPer: this.perValueMax,
+                        minRoe: this.roeValueMin,
+                        maxRoe: this.roeValueMax,
                     }
                 }).then(response => {
-                    console.log(response.body['dataL']);
-                    // fundTableOption(response.body);
+                    if (response.body == 'error') {
+                        alert('숫자를 제대로 입력해 주세요');
+                    } else {
+                        document.getElementById('table_spec').innerHTML = response.body['dataL'];
+                    }
+                    document.getElementById("loading").innerHTML = '';
 
-                    this.story = response.body['dataL'];
-
-                    fundTableOption(this.story);
                 }, response => {
-                    // error callback
-                    console.log("an error occurred while getting /screener_input");
+                    console.log("an error occured while getting roe filter")
                 });
-            },
+            }
+
         },
     });
-</script>
-<script type="text/javascript">
-    function fundTableOption(dataL) {
-        document.getElementById("table_spec").innerHTML = dataL;
-    }
 </script>
 <script>
     function printName() {
@@ -110,8 +138,11 @@
 </script>
 <script>
     function fundTable() {
+        document.getElementById("loading").innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+        document.getElementById("table_spec").innerHTML = '';
         $.get("/screener_sise", {}, function(data) {
             var result = ' ';
+            console.log(data.dataL);
             data.dataL.forEach(fundObject => {
                 result = result + "<tr>";
                 fundObject.forEach(col => {
@@ -122,15 +153,9 @@
                 result = result + "</tr>";
             });
             document.getElementById("table_spec").innerHTML = result;
-        })
-    }
-</script>
-<script>
-    function searchTable() {
-        var table = document.getElementById("table_spec").innerHTML.split("<tr>");
-        const per = document.getElementById('PER ').value;
+            document.getElementById("loading").innerHTML = '';
 
-        console.log(table);
+        });
     }
 </script>
 {% endblock %}
