@@ -16,11 +16,16 @@
             <tr v-for="good in goodL">
                 <td scope="row">[[ good[0] ]]</td>
                 <td>
-                    <a href="https://finance.naver.com/item/main.nhn?code=[[good[0]]]">[[ good[1] ]] </a>
+                    <a
+                        href="https://finance.naver.com/item/main.nhn?code=[[good[0]]]"
+                        >[[ good[1] ]]
+                    </a>
                 </td>
                 <td>[[ good[2] ]]</td>
                 <td>
-                    <button type="button" class="btn-sm btn-success">매도</button>
+                    <button type="button" class="btn-sm btn-success">
+                        매도
+                    </button>
                 </td>
             </tr>
         </tbody>
@@ -34,7 +39,7 @@
 </div>
 
 <script>
-    Vue.config.devtools = true
+    Vue.config.devtools = true;
     var app = new Vue({
         el: "#app",
         delimiters: ["[[", "]]"],
@@ -51,18 +56,23 @@
             title: "hihi",
             goodL: {},
         },
-        mounted: function() {
+        mounted: function () {
             this.fetchData();
         },
         methods: {
-            fetchData: function() {
-                this.$http.get("/getGoodL").then(response => {
-                    console.log(response.body);
-                    this.goodL = response.body.goodL;
-                }, response => {
-                    // error callback
-                    console.log("an error occurred while getting /getGoodL");
-                });
+            fetchData: function () {
+                this.$http.get("/getGoodL").then(
+                    (response) => {
+                        console.log(response.body);
+                        this.goodL = response.body.goodL;
+                    },
+                    (response) => {
+                        // error callback
+                        console.log(
+                            "an error occurred while getting /getGoodL"
+                        );
+                    }
+                );
             },
         },
     });
