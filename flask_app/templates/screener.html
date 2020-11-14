@@ -47,7 +47,7 @@
                 class="btn btn-outline-success my-2 my-sm-0"
                 type="button"
                 id="temp"
-                onclick="fundTable()"
+                onclick="ok()"
             >
                 [[makeFund]]
             </button>
@@ -79,7 +79,65 @@
     </table>
 </div>
 <div id="loading"></div>
-
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="#">Previous</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="fundTable(1)">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">4</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">5</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">6</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">7</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">8</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">9</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="fundTable(10)">10</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">11</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">12</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">13</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">14</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">15</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 <script>
     Vue.config.devtools = true;
     new Vue({
@@ -120,7 +178,7 @@
                         },
                         (response) => {
                             console.log(
-                                "an error occured while getting roe filter"
+                                "an error occured while getting filter"
                             );
                         }
                     );
@@ -128,26 +186,17 @@
         },
     });
 </script>
+
 <script>
-    function printName() {
-        const name = document.getElementById("PER ").value;
-        $.get(
-            "/screener_input",
-            {
-                name: name,
-            },
-            function (name) {
-                document.getElementById("demo").innerText = name;
-            }
-        );
+    var allFund = "not yet";
+    function ok() {
+        console.log(allFund);
     }
-</script>
-<script>
-    function fundTable() {
+    function fundTable(page) {
         document.getElementById("loading").innerHTML =
-            '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+            '<div class="t  ext-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
         document.getElementById("table_spec").innerHTML = "";
-        $.get("/screener_sise", {}, function (data) {
+        $.get("/screener_sise", { page: page }, function (data) {
             var result = " ";
             console.log(data.dataL);
             data.dataL.forEach((fundObject) => {
@@ -163,5 +212,31 @@
             document.getElementById("loading").innerHTML = "";
         });
     }
+
+    $(document).ready(function fundTableAll() {
+        $.get("/screener_first", {}, function (data) {
+            allFund = data.dataL;
+        });
+    });
+
+    // $(document).ready(function () {
+    //     $("button").click(function () {
+    //         $.get("/screener_first", {}, function (data) {
+    //             allFund = data.dataL;
+    //         });
+    //     });
+    // });
+
+    // $(document).ready(function () {
+    //     $("button").click(function () {
+    //         console.log(allFund);
+    //     });
+    // });
+</script>
+
+<script>
+    $(function () {
+        fundTable(1);
+    });
 </script>
 {% endblock %}

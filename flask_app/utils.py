@@ -183,10 +183,35 @@ def statusGoodL(goodL):
     return result
 
 
-def crawlingSise():
+def crawlingKospiAll():
     result = []
-    for page in range(1, 3):
-        url = 'https://finance.naver.com/sise/sise_market_sum.nhn?&page='
+    for page in range(1, 33):
+        print(page)
+        url = 'https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0&page='
+        res = requests.get(url+str(page))
+        html = res.text
+        soup = bs(html, 'html.parser')
+        title = soup.find_all('th')
+        title = [x.text for x in title]
+        summary = soup.find_all('tr')
+        try:
+            for index in range(7, 87):
+                content = summary[index].find_all('td')
+                a = [x.text.replace("\n", "").replace("\t", "")
+                     for x in content]
+                if a != ['']:
+                    result.append(a)
+        except:
+            del result[len(result)-1]
+            break
+    return result
+
+
+def crawlingSise(pageIndex):
+    result = []
+    for page in range(int(pageIndex)*2-1, int(pageIndex)*2+1):
+        url = 'https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0&page='
+
         res = requests.get(url+str(page))
         html = res.text
 
@@ -199,10 +224,9 @@ def crawlingSise():
         for index in range(7, 87):
             content = summary[index].find_all('td')
             a = [x.text.replace("\n", "").replace("\t", "") for x in content]
-            if a == ['']:
-                p = 0
-            else:
+            if a != ['']:
                 result.append(a)
+
                 # result에 정보들 저장되어 있음
     for item in result:
         del item[12]

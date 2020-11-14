@@ -38,6 +38,12 @@ def getGoodL():
     return jsonify(goodL=utils.statusGoodL(localData.getGoodL(date)))
 
 
+@app.route('/screener_first')
+def screener_first():
+    dataL = utils.crawlingKospiAll()
+    return jsonify(dataL=dataL)
+
+
 @app.route('/screener_filter')
 def screener_filter():
     args = request.args
@@ -66,8 +72,10 @@ def screener_filter():
 
 @app.route('/screener_sise')
 def screener_sise():
+    args = request.args
+    page = args['page']
     # 이거 페이지 32페이지 까지 있음
-    dataL = utils.crawlingSise()
+    dataL = utils.crawlingSise(page)
     return jsonify(dataL=dataL)
 
 
