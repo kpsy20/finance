@@ -5,13 +5,13 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 global date
-date = "20200925_good.db"
+date = "20201113_good.db"
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def hello():
+def index_screener():
     return render_template('screener.html')
 
 
@@ -97,5 +97,5 @@ def change_status():
 
 
 if __name__ == '__main__':
-    # localData.dataUpdate("")
+    localData.dataUpdate("20201113")
     app.run()
