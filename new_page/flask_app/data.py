@@ -4,7 +4,7 @@ import sqlite3
 def setCodeList(data):
     conn = sqlite3.connect('NameAndCode.db')
     c = conn.cursor()
-    c.execute("INSERT INTO NameAndCode VALUES('HAM','BUM')")
+    c.executemany("INSERT INTO NameAndCode VALUES(?, ?)", data)
     print("setCodeList complet e")
     conn.commit()
     c.close()

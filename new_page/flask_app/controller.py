@@ -15,10 +15,10 @@ def index():
 
 @app.route('/index_database/')
 def index_database():
-    #allKospiList = utils.crawingAllKospiNameAndCode()
-    # data.setCodeList(allKospiList)
-    data.setCodeList("null")
-    return "finish"
+    allKospiList = utils.crawingAllKospiNameAndCode()
+    dbFormat = utils.makeDBFormat(allKospiList)
+    data.setCodeList(dbFormat)
+    return "finish!!"
 
 
 if __name__ == '__main__':
