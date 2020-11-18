@@ -17,7 +17,6 @@ def crawingAllKospiNameAndCode():
         title = [x.text for x in title]
 
         summary = soup.find_all('tr')
-        print(len(summary))
         for i in range(7, len(summary)-1):
             a = summary[i].find_all('a')
             if(a != []):
@@ -25,4 +24,12 @@ def crawingAllKospiNameAndCode():
                 last = str(a[0])[code:].index('"')
                 code_result.append(str(a[0])[code+5:code+last])
                 name_result.append(a[0].text)
+        print(page)
     return code_result, name_result  # ([code_result], [name_result]) 형태로 리턴
+
+
+def makeDBFormat(codeAndNameList):  # codeAndNameList => ([1,2],[3,4])
+    result = []
+    for i in range(len(codeAndNameList[0])):
+        result.append([codeAndNameList[0][i], codeAndNameList[1][i]])
+    return result
