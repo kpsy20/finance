@@ -26,9 +26,10 @@ def makeNameAndCode(name, col):
     c.close()
 
 
-# conn = sqlite3.connect('database.db')
-# c = conn.cursor()
-# conn.execute(
-#     'CREATE TABLE IF NOT EXISTS fundCodeList (code TEXT)')
-# print("database on")
-# conn.close()
+def getCode():
+    conn = sqlite3.connect("NameAndCode.db")
+    conn.row_factory = lambda cursor, row: row[0]  # 데이터 불러오는 형식을 바꿔주는 코드
+    c = conn.cursor()
+    result = c.execute("SELECT code FROM NameAndCode").fetchall()
+    c.close()
+    return result
