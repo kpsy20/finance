@@ -25,13 +25,19 @@
     </head>
 
     <body>
-        <button onclick="database()">click me</button>
+        <button onclick="database()">make database</button>
+        <button onclick="getdata()">데이터 불러오기</button>
     </body>
 
     <script>
         function database() {
             $.get("/index_database", {}, function (data) {
                 //do it
+                console.log(data);
+            });
+        }
+        function getdata() {
+            $.get("/index_getdata/", {}, function (data) {
                 console.log(data);
             });
         }
