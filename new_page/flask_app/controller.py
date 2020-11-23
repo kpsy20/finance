@@ -24,8 +24,28 @@ def index_database():
 
 @app.route('/index_getdata/')
 def index_getdata():
-    print(data.getCode())
+    code_list = data.getCode()  # return dataframe
+    name_list = data.getName()
+    for i in range(len(code_list)):
+        dataFrame = utils.crawlingAllInfo(code_list[i])
+        if(len(dataFrame) != 0):
+            data.saveDataFrame(dataFrame, name_list[i], code_list[i])
+        # db에 저장.
+        print(i)
     return "fetch finish!"
+
+
+@app.route('/index_setscore/')
+def index_setscore():
+    dataFrameNameAndCode = data.getDataFrameNameAndCode()
+    for name in dataFrameNameAndCode:
+        score = []
+        df = data.getDataFrame(name)  # 이러면 데이터 프레임 가져옴
+        score.append(utils.setScore(df))
+        data.setScore(score, name)
+    # df 가지고 점수 내면 됨.
+        print(name)
+    return "score finish!"
 
 
 if __name__ == '__main__':
