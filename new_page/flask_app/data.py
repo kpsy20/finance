@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 
 def setCodeList(data):
@@ -33,3 +34,58 @@ def getCode():
     result = c.execute("SELECT code FROM NameAndCode").fetchall()
     c.close()
     return result
+
+
+def getName():
+    conn = sqlite3.connect("NameAndCode.db")
+    conn.row_factory = lambda cursor, row: row[0]  # 데이터 불러오는 형식을 바꿔주는 코드
+    c = conn.cursor()
+    result = c.execute("SELECT name FROM NameAndCode").fetchall()
+    c.close()
+    return result
+
+
+def saveDataFrame(dataFrame, name, code):
+    conn = sqlite3.connect("dataFrame.db")
+    conn2 = sqlite3.connect("dataFrameNameAndCode.db")
+    c = conn.cursor()
+    c2 = conn2.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS " + name +
+              " ('연간실적.2017.12', '연간실적.2018.12', '연간실적.2019.12', '연간실적.2020.12','최근분기실적.2019.06', '최근분기실적.2019.09', '최근분기실적.2019.12','최근분기실적.2020.03', '최근분기실적.2020.06', '최근분기실적.2020.09')")
+    c2.execute("CREATE TABLE IF NOT EXISTS dataFrameNameAndCode (name, code)")
+    c2.execute("INSERT INTO dataFrameNameAndCode VALUES(?, ?)", [name, code])
+    conn2.commit()
+    dataFrame.to_sql(name, conn, if_exists="replace")
+    conn.commit()
+    c2.close()
+    c.close()
+    return "save finish!"
+
+
+def getDataFrameNameAndCode():
+    conn = sqlite3.connect('dataFrameNameAndCode.db')
+    conn.row_factory = lambda cursor, row: row[0]  # 데이터 불러오는 형식을 바꿔주는 코드
+    c = conn.cursor()
+    result = c.execute("SELECT name FROM dataFrameNameAndCode").fetchall()
+    c.close()
+    return result
+
+
+def getDataFrame(name):
+    conn = sqlite3.connect('dataFrame.db')
+    # conn.row_factory = lambda cursor, row: row[0]
+    df = pd.read_sql_query("SELECT * FROM " + name, conn)
+    c = conn.cursor()
+    c.close()
+    return df
+
+
+def setScore(score, name):
+    conn = sqlite3.connect('dataFrameNameAndCode.db')
+    c = conn.cursor()
+    #c.execute("ALTER TABLE dataFrameNameAndCode ADD COLUMN score text")
+    c.execute("update dataFrameNameAndCode set score = '" +
+              str(score[0])+"'where name = '" + name+"'")
+    conn.commit()
+    c.close()
+    return "set Score finish!"

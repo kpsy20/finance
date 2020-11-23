@@ -25,8 +25,9 @@
     </head>
 
     <body>
-        <button onclick="database()">make database</button>
-        <button onclick="getdata()">데이터 불러오기</button>
+        <button onclick="database()">이름과 코드 데이터 베이스에 저장</button>
+        <button onclick="getdata()">종목 상세정보 데이터 베이스에 저장</button>
+        <button onclick="setscore()">점수 산출 후 데이터 베이스에 저장</button>
     </body>
 
     <script>
@@ -38,6 +39,11 @@
         }
         function getdata() {
             $.get("/index_getdata/", {}, function (data) {
+                console.log(data);
+            });
+        }
+        function setscore() {
+            $.get("/index_setscore/", {}, function (data) {
                 console.log(data);
             });
         }
