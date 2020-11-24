@@ -37,6 +37,17 @@ def makeDBFormat(codeAndNameList):  # codeAndNameList => ([1,2],[3,4])
     return result
 
 
+def strToFloat(num):
+    num = num.replace(',', '')
+    if('조' in num):
+        jo = num[0:num.find('조')]
+        uk = num[num.find('조')+1:num.find('억')]
+        result = int(jo)*10000+int(uk)
+    else:
+        result = num[0:num.find('억')]
+    return int(result)
+
+
 def crawlingAllInfo(code):
     url = 'https://finance.naver.com/item/main.nhn?code='
     res = requests.get(url + str(code))
@@ -44,6 +55,7 @@ def crawlingAllInfo(code):
     soup = bs(html, 'html.parser')
     title = soup.find_all('td')
     df = pd.DataFrame([], columns=['default'])
+    allMoney = 0
     if(len(title) == 410):  # 정상 얘들, 201118 기준 1575개 중 875개
         result = []
         for tds in range(57, 217):
@@ -59,7 +71,9 @@ def crawlingAllInfo(code):
 
         for i in range(16):
             df.iloc[i] = result[i]
-    return df
+        allMoney = strToFloat(
+            title[287].text.replace("\n", '').replace('\t', ''))
+    return df, allMoney
     # td 57~216까지가 기업실적분석표
     # td 217~286이 동일업종비교표
     # 연간실적(2017.12 2018.12 2019.12 2020.12), 최근분기실적(2019.06 2019.09, 2019.12, 2020.03, 2020.06, 2020.09)
@@ -81,36 +95,38 @@ def crawlingAllInfo(code):
     # 배당성향 207
 
 
-def setScore(df):
+def setScore(df, allMoney):
     element = []
+    result = []
     for i in range(len(df)):
         element.append(df.iloc[i])
-    result = scoreYearMoney(element)
+    result.append(scoreMoney(element, allMoney))
+    result.append(scorePercent(element, allMoney))
     return result
 
 
-def scoreYearMoney(ele):  # ele = list
+def scoreMoney(ele, allMoney):  # ele = list
     # print(ele[0]) 매출액 0, 0, .. 10개
-    i = [0, 1, 2]
+    i = [0, 1, 2]  # 매출액, 영업이익, 당기순이익
     score = []
-    year_score = []
     for index in i:
+        year_score = []
         year = []
-        for element in range(1, 5):
+        divide = []
+        for element in range(5, 11):
             if(ele[index][element] != '' and ele[index][element] != '-'):  # valid value
                 year.append(ele[index][element])
-        print("year", year)
+                divide.append(element)
+        #print("year", year)
         for num in range(len(year)-1):
             year_score.append(
-                (float(year[num+1]) - float(year[num])) / float(year[num]))
+                (float(year[num+1]) - float(year[num])) /
+                (divide[len(divide)-num-1]-5))  # 옛날 자료는 비율 낮게.. 2017 - 2018 3으로 나눔, 2018 - 2019 2로 나눔 2019 - 2020 1로 나눔
         all = 0
         for last in range(len(year_score)):
             all = all + year_score[last]
             if(last == len(year_score)-1):
-                if(last == 0):
-                    all = 0
-                else:
-                    all = all / float(last)
+                all = all / (float(last) + 1) / int(allMoney)
         if(all != 0):
             score.append(all)
     result = 0
@@ -120,8 +136,39 @@ def scoreYearMoney(ele):  # ele = list
         result = (result / float(len(score))) * 100
     else:
         result = 0
+    print(result)
     return result
 
 
-def scoreYearPercent(ele):
-    i = [3, 5, 6]
+def scorePercent(ele, allMoney):
+    i = [3, 4, 5]  # 영업이익률, 순이익률, ROE
+    score = []
+    for index in i:
+        year_score = []
+        year = []
+        divide = []
+        for element in range(5, 11):
+            if(ele[index][element] != '' and ele[index][element] != '-'):  # valid value
+                year.append(ele[index][element])
+                divide.append(element)
+        #print("year", year)
+        for num in range(len(year)-1):
+            year_score.append(
+                (float(year[num+1]) - float(year[num])) / (divide[len(divide)-num-1]-5))
+            # 옛날 자료는 비율 낮게.. 2017 - 2018 3으로 나눔, 2018 - 2019 2로 나눔 2019 - 2020 1로 나눔
+        all = 0
+        for last in range(len(year_score)):
+            all = all + year_score[last]
+            if(last == len(year_score)-1):
+                all = all / (float(last) + 1) / int(allMoney)
+        if(all != 0):
+            score.append(all)
+    result = 0
+    for val in score:
+        result = result + val
+    if(len(score) != 0):
+        result = (result / float(len(score))) * 100
+    else:
+        result = 0
+    print(result)
+    return result
