@@ -15,10 +15,10 @@ def index():
 
 @app.route('/index_database/')
 def index_database():
-    data.makeNameAndCode('NameAndCode', ['code', 'name'])  # 내가 하다가 지웠을때 때문에 추가
-    allKospiList = utils.crawingAllKospiNameAndCode()
-    dbFormat = utils.makeDBFormat(allKospiList)
-    data.setCodeList(dbFormat)
+    data.makeNameAndCode('NameAndCode', ['code', 'name'])
+    allKospiList = utils.crawingAllKospiNameAndCode()  # 모든 얘들 코드와 이름 가져옴
+    dbFormat = utils.makeDBFormat(allKospiList)  # 위에 가져온걸 db형식에 맞게 변경
+    data.setCodeList(dbFormat)  # NameAndCode.db에 저장
     return "finish!!"
 
 
@@ -27,9 +27,11 @@ def index_getdata():
     code_list = data.getCode()  # return dataframe
     name_list = data.getName()
     for i in range(len(code_list)):
+        # dataFrame[0] == 데이터 프레임, dataFrame[1] == 시가총액
         dataFrame = utils.crawlingAllInfo(code_list[i])
-        if(len(dataFrame) != 0):
-            data.saveDataFrame(dataFrame, name_list[i], code_list[i])
+        if(len(dataFrame[0]) != 0 and ((name_list[i][-1] != '우' and name_list[i][-2:] != '우B' and name_list[i][-3:] != '우전환') or name_list[i] == '미래에셋대우')):
+            data.saveDataFrame(
+                dataFrame[0], name_list[i], code_list[i], dataFrame[1])
         # db에 저장.
         print(i)
     return "fetch finish!"
@@ -37,14 +39,16 @@ def index_getdata():
 
 @app.route('/index_setscore/')
 def index_setscore():
-    dataFrameNameAndCode = data.getDataFrameNameAndCode()
-    for name in dataFrameNameAndCode:
-        score = []
+    # [0] == names, [1] == allMoneys
+    dataFrameNameAndAllMoney = data.getDataFrameNameAndAllMoney()
+    index = 0
+    for name in dataFrameNameAndAllMoney[0]:
         df = data.getDataFrame(name)  # 이러면 데이터 프레임 가져옴
-        score.append(utils.setScore(df))
+        score = utils.setScore(df, dataFrameNameAndAllMoney[1][index])
         data.setScore(score, name)
     # df 가지고 점수 내면 됨.
         print(name)
+        index = index+1
     return "score finish!"
 
 

@@ -45,15 +45,17 @@ def getName():
     return result
 
 
-def saveDataFrame(dataFrame, name, code):
+def saveDataFrame(dataFrame, name, code, allMoney):
     conn = sqlite3.connect("dataFrame.db")
     conn2 = sqlite3.connect("dataFrameNameAndCode.db")
     c = conn.cursor()
     c2 = conn2.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS " + name +
               " ('연간실적.2017.12', '연간실적.2018.12', '연간실적.2019.12', '연간실적.2020.12','최근분기실적.2019.06', '최근분기실적.2019.09', '최근분기실적.2019.12','최근분기실적.2020.03', '최근분기실적.2020.06', '최근분기실적.2020.09')")
-    c2.execute("CREATE TABLE IF NOT EXISTS dataFrameNameAndCode (name, code)")
-    c2.execute("INSERT INTO dataFrameNameAndCode VALUES(?, ?)", [name, code])
+    c2.execute(
+        "CREATE TABLE IF NOT EXISTS dataFrameNameAndCode (name, code, allMoney, scoreMoney, scorePercent)")
+    c2.execute("INSERT INTO dataFrameNameAndCode(name, code, allMoney) VALUES(?, ?, ?)",
+               [name, code, allMoney])
     conn2.commit()
     dataFrame.to_sql(name, conn, if_exists="replace")
     conn.commit()
@@ -62,13 +64,15 @@ def saveDataFrame(dataFrame, name, code):
     return "save finish!"
 
 
-def getDataFrameNameAndCode():
+def getDataFrameNameAndAllMoney():
     conn = sqlite3.connect('dataFrameNameAndCode.db')
     conn.row_factory = lambda cursor, row: row[0]  # 데이터 불러오는 형식을 바꿔주는 코드
     c = conn.cursor()
-    result = c.execute("SELECT name FROM dataFrameNameAndCode").fetchall()
+    name = c.execute("SELECT name FROM dataFrameNameAndCode").fetchall()
+    allMoney = c.execute(
+        "select allMoney from dataFrameNameAndCode").fetchall()
     c.close()
-    return result
+    return [name, allMoney]
 
 
 def getDataFrame(name):
@@ -83,9 +87,10 @@ def getDataFrame(name):
 def setScore(score, name):
     conn = sqlite3.connect('dataFrameNameAndCode.db')
     c = conn.cursor()
-    #c.execute("ALTER TABLE dataFrameNameAndCode ADD COLUMN score text")
-    c.execute("update dataFrameNameAndCode set score = '" +
-              str(score[0])+"'where name = '" + name+"'")
+    c.execute("update dataFrameNameAndCode set scoreMoney = '" +
+              str(score[0]) + "'where name = '" + name+"'")
+    c.execute("update dataFrameNameAndCode set scorePercent = '" +
+              str(score[1])+"'where name = '" + name+"'")
     conn.commit()
     c.close()
     return "set Score finish!"
