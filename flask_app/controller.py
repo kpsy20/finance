@@ -97,5 +97,5 @@ def change_status():
 
 
 if __name__ == '__main__':
-    localData.dataUpdate("")
+    localData.dataUpdate("20201209")
     # app.run()
