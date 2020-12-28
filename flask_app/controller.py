@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 global date
-date = "20201209_good.db"
+date = "20201228_good.db"
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -97,5 +97,5 @@ def change_status():
 
 
 if __name__ == '__main__':
-    localData.dataUpdate("20201209")
-    # app.run()
+    localData.dataUpdate("20201228")
+    app.run()
