@@ -1,18 +1,16 @@
 from flask import Flask, request, render_template, jsonify
 import localData
 import utils
-import requests
-from bs4 import BeautifulSoup as bs
 
 global date
-date = "20201113_good.db"
+date = "20210323_good.db"
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 
 @app.route('/')
 def index_screener():
-    return render_template('screener.html')
+    return render_template('index.html')
 
 
 @app.route('/screener')
@@ -55,15 +53,15 @@ def screener_filter():
     minmaxL = {"minPer": minPer, "maxPer": maxPer,
                "minRoe": minRoe, "maxRoe": maxRoe}
     for i in range(0, len(minmaxIndex)):
-        if(minmaxL[minmaxIndex[i]] != ''):
+        if minmaxL[minmaxIndex[i]] != '':
             try:
                 minmaxL[minmaxIndex[i]] = float(minmaxL[minmaxIndex[i]])
             except:
                 return "error"
         else:  # 공백으로 넘겨준 경우
-            if(i == 0 or i == 2):
+            if i == 0 or i == 2:
                 minmaxL[minmaxIndex[i]] = float('-inf')
-            if(i == 1 or i == 3):
+            if i == 1 or i == 3:
                 minmaxL[minmaxIndex[i]] = float('inf')
 
     dataL = utils.crawlingSiseOption(minmaxL, minmaxIndex)
@@ -97,5 +95,5 @@ def change_status():
 
 
 if __name__ == '__main__':
-    localData.dataUpdate("20201113")
+    localData.dataUpdate("20210323")
     app.run()
