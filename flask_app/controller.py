@@ -3,7 +3,7 @@ import localData
 import utils
 
 global date
-date = "20210423_good.db"
+date = "20210525_good.db"
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -95,5 +95,5 @@ def change_status():
 
 
 if __name__ == '__main__':
-    localData.dataUpdate("20210423")
+    localData.dataUpdate("20210525")
     app.run()
